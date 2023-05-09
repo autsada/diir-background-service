@@ -1,6 +1,5 @@
 import * as admin from "firebase-admin"
 import { getStorage } from "firebase-admin/storage"
-import { getFirestore } from "firebase-admin/firestore"
 import { defineString, defineSecret } from "firebase-functions/params"
 
 admin.initializeApp()
@@ -8,7 +7,6 @@ admin.initializeApp()
 export const env = defineString("NODE_ENV", { default: "development" })
 export const minInstances = env.equals("production").thenElse(1, 0)
 export const rawBucket = getStorage().bucket()
-export const db = getFirestore()
 export const cloudflareApiToken = defineSecret("CLOUDFLAR_API_TOKEN")
 export const cloudflareAccountId = defineSecret("CLOUDFLAR_ACCOUNT_ID")
 export const cloudflareBaseURL = defineString("CLOUDFLAR_BASE_URL")

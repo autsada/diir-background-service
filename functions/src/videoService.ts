@@ -13,7 +13,6 @@ import {
   cloudflareApiToken,
   cloudflareAccountId,
   cloudflareBaseURL,
-  db,
 } from "."
 
 const logger = functions.logger
@@ -121,16 +120,6 @@ export const transcodeVideo = functions
             },
           },
         })
-
-        const publishId = filePath.split("/")[2]
-
-        // Write upload status to Firestore so the UI can listen to the update.
-        await db.collection("uploads").doc(publishId).set(
-          {
-            status: "finished",
-          },
-          { merge: true }
-        )
       }
 
       logger.log("Processing video finished")
