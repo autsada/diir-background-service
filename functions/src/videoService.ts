@@ -13,6 +13,7 @@ import {
   cloudflareApiToken,
   cloudflareAccountId,
   cloudflareBaseURL,
+  db,
 } from "."
 
 const logger = functions.logger
@@ -41,7 +42,7 @@ export const transcodeVideo = functions
   .storage.object()
   .onFinalize(async (obj) => {
     try {
-      // File path will be in the form of `{stationId}/{publish}/{publishId}/{filename}.mp4` and this is unique.
+      // File path will be in the form of `publishes/{station_name}/{publishId}/{filename}.mp4` and this is unique.
       const filePath = obj.name
 
       if (!filePath) {
@@ -116,9 +117,20 @@ export const transcodeVideo = functions
             meta: {
               name: fileName,
               path: filePath,
+              uri: downloadURL,
             },
           },
         })
+
+        const publishId = filePath.split("/")[2]
+
+        // Write upload status to Firestore so the UI can listen to the update.
+        await db.collection("uploads").doc(publishId).set(
+          {
+            status: "finished",
+          },
+          { merge: true }
+        )
       }
 
       logger.log("Processing video finished")
