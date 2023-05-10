@@ -116,7 +116,8 @@ export const transcodeVideo = functions
             meta: {
               name: fileName,
               path: filePath,
-              uri: downloadURL,
+              contentURI: downloadURL,
+              contentRef: filePath,
             },
           },
         })
